@@ -40,4 +40,6 @@ public class ProductController : ControllerBase
         var product = products.FirstOrDefault(p => p.Id == id);
         return product == null ? NotFound() : Ok(product);
     }
+
+
 }
