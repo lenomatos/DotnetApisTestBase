@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.enable-remote-write-receiver" # THIS IS CRUCIAL
+      - "--web.enable-lifecycle" # Allows config reloads
+    networks:
+      - monitoring-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Add this
+    networks:
+      - monitoring-net
+    depends_on:
+      - prometheus
+
+networks:
+  monitoring-net:
+    name: monitoring-net
+    attachable: true # Add this
+
+volumes:
+  grafana-storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./grafana-data # Creates local folder

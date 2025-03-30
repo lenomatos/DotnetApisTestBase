@@ -1,5 +1,6 @@
 using PrimeWebApi.Services.Interfaces;
 using PrimeWebApi.Services;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,5 +32,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// In your middleware configuration (before app.Run())
+app.UseMetricServer(); // Exposes /metrics endpoint
+app.UseHttpMetrics();  // Collects HTTP metrics
 
 app.Run();
