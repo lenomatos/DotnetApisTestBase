@@ -22,6 +22,9 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=Admin@123
     extra_hosts:
       - "host.docker.internal:host-gateway" # Add this
     networks:
@@ -37,7 +40,3 @@ networks:
 volumes:
   grafana-storage:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./grafana-data # Creates local folder

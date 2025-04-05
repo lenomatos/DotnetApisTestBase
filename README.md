@@ -129,8 +129,11 @@ npm install -g k6-html-reporter
 # Generate Report
 
 ```
+dotnet run --project PrimeWebApi\PrimeWebApi.csproj
+# open a new terminal cd DotnetApisTestBase
+# update the localhost in PrimeWebApi.Tests.K6/stress_test.js -> const baseUrl = "http://localhost:5260"; // Update if hosted elsewhere
 k6 run --out json=PrimeWebApi.Tests.K6/results.json PrimeWebApi.Tests.K6/stress_test.js
-start PrimeWebApi.Tests.K6/report.html
+start PrimeWebApi.Tests.K6/summary.html
 ```
 
 ## 📊 k6 In Terminal
@@ -150,6 +153,7 @@ Here's how it looks:
 # Grafana & Prometheus integration podman or docker
 
 ```
+cd Monotiring
 podman pull docker.io/grafana/grafana
 podman pull docker.io/prom/prometheus
 
@@ -157,15 +161,31 @@ podman network create monitoring-net
 
 podman-compose up -d
 
+cd DotnetApisTestBase
+
+dotnet run --project PrimeWebApi\PrimeWebApi.csproj
+
+k6 run --out experimental-prometheus-rw=serverUrl=http://localhost:9090/api/v1/write ` --tag testid=stress-test-1 ` PrimeWebApi.Tests.K6/stress_test.js
+# or
+k6 run --out experimental-prometheus-rw=serverUrl=http://prometheus:9090/api/v1/write ` --tag testid=stress-test-1 ` PrimeWebApi.Tests.K6/stress_test.js
+
 ```
 
 Grafana: http://localhost:3000 (admin/admin)
+
 Prometheus: http://localhost:9090
+
+In Grafana: Add new datasoruces -> use
+http://prometheus:9090 # to add prometheus as grafana data source
 
 Import the k6 dashboard:
 Click "+" → "Import"
 Use dashboard ID 19665 (k6 official dashboard)
 Select your Prometheus data source
+
+![Coverage Report](./docs/images/grafana_dashboard.png)
+
+![Coverage Report](./docs/images/prometheus_geral.png)
 
 ## 🔍 Key References
 

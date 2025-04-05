@@ -19,7 +19,7 @@ export const options = {
 
 // Test execution
 export default function () {
-  const baseUrl = "https://localhost:44312"; // Update if hosted elsewhere
+  const baseUrl = "http://localhost:5260"; // Update if hosted elsewhere
 
   // Test 1: CheckNumberType endpoint
   const numRes = http.get(`${baseUrl}/Prime/checknumber/42`);
